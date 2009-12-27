@@ -1,0 +1,26 @@
+<html>
+<head>
+    <script src = "j.js"></script>
+    <script src = "json.js"></script>
+    <script src = "util.js"></script>
+    <script src = "parse.js"></script>
+    <script src = "eval.js"></script>
+    <script>
+    $(document).ready(function(){
+        var code = parse($('drewby').html());
+        $('body').append($.toJSON(code))
+        //run(code)
+    })
+    </script>
+
+</head>
+<body>
+
+<drewby>
+test(you) another (thing here)
+</drewby>
+
+</body>
+
+</html>
+
