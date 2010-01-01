@@ -5,7 +5,6 @@ function parse(code){
     var i = 0;
     var state = "symbol";
     var chr;
-    var need_to_close=false;
     while (i < code.length) {
         chr = code.charAt(i)
         if (state == "symbol") {
@@ -26,15 +25,9 @@ function parse(code){
                 } else if (exp.length > 0 && val.length > 0) {
                     var symbol = val.join('')
                     val = []
-                    if (need_to_close == true) {
-                        exp.push(symbol)
-                        exp = [exp]
-                        need_to_close = false
-                    } else {
-                        stack.push(exp)
-                        exp = [symbol]
-                        console.log(symbol)
-                    }
+                    stack.push(exp)
+                    exp = [symbol]
+                    console.log(symbol)
                 }
             } else if (chr == ")") {
                 if (val.length > 0){                
@@ -49,6 +42,7 @@ function parse(code){
                     }
                                         
                     if (next_chr == " " || is_return(next_chr)) {
+                        console.log(stack)                        
                         new_exp = exp; 
                         exp = stack.pop()
                         exp.push(new_exp)
@@ -58,10 +52,7 @@ function parse(code){
                         exp = [exp]
                         i++
                     } else if (is_symbol(next_chr)) {
-                        console.log("yes?")
-                        console.log(exp)
-                        exp = [exp]
-                        need_to_close = true;
+                        
                     } else {
                         console.log("problem")
                     }
@@ -74,12 +65,6 @@ function parse(code){
                     val = []
                     exp.push(symbol)             
                }
-                if (need_to_close == true) {
-                    new_exp = exp; 
-                    exp = stack.pop()
-                    exp.push(new_exp)
-                    need_to_close = false;
-                }
             }
         }
         i++;

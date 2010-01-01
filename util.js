@@ -14,3 +14,9 @@ function is_symbol(str) {
 function is_return(str) {
     return "\n\r\u000a\u000d".indexOf(str) > -1;
 }
+
+function find_new_line(i, code) {
+    //return code.
+}
+
+//['\n', '\r', '\u000a', '\u000d']
