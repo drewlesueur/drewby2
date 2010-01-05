@@ -5,11 +5,16 @@ function parse(code){
     var i = 0;
     var state = "symbol";
     var chr;
-    var need_to_close=false;
+    var need_to_close = false;
     while (i < code.length) {
         chr = code.charAt(i)
         if (state == "symbol") {
-            if (is_symbol(chr)) {
+            if (chr == "'") {
+                single_quote = true
+                stack.push(exp)
+                exp = ["list"]
+                console.log(exp)
+            } if (is_symbol(chr)) {
                 val.push(chr)            
             } else if (chr == "(") {
                  if (val.length == 0 && exp.length == 0) {
@@ -33,53 +38,53 @@ function parse(code){
                     } else {
                         stack.push(exp)
                         exp = [symbol]
-                        console.log(symbol)
                     }
+                    need_to_close = false
                 }
             } else if (chr == ")") {
-                if (val.length > 0){                
-                    exp.push(val.join(""))
-                    val = []                
-                }
-                //if (stack.length > 0) {
-                    if (i+1 < code.length) {
-                        var next_chr = code.charAt(i+1)
-                    } else {
-                        var next_chr = " "
-                    }
-                                        
-                    if (next_chr == " " || is_return(next_chr)) {
-                        new_exp = exp; 
-                        exp = stack.pop()
-                        exp.push(new_exp)
-                        i++
-                    } else if (next_chr == "(") {
-                        //stack.push(exp) //no need to do this!                        
-                        exp = [exp]
-                        i++
-                    } else if (is_symbol(next_chr)) {
-                        console.log("yes?")
-                        console.log(exp)
-                        exp = [exp]
-                        need_to_close = true;
-                    } else {
-                        console.log("problem")
-                    }
-                //}
+                state = "potential close"
             } else if (chr == ";") {
-                i = find(['\n', '\r', '\u000a', '\u000d']) //comment go to the next carriage return
-            } else if (chr == " ") { //if there is a space
-                 if (val.length > 0) {
+                i = find_new_line(i, code)
+            } else if (chr == " " || is_return(chr)) { //if there is a space
+                if (val.length > 0) {
                     var symbol = val.join('')
                     val = []
                     exp.push(symbol)             
-               }
+                }
                 if (need_to_close == true) {
                     new_exp = exp; 
                     exp = stack.pop()
                     exp.push(new_exp)
                     need_to_close = false;
                 }
+            }
+        } else if (state = "potential close" ) {
+            if (val.length > 0){                
+                exp.push(val.join(""))
+                val = []                
+            }
+            state = "symbol"
+            if (chr == " " || is_return(chr)) {
+                new_exp = exp; 
+                exp = stack.pop()
+                exp.push(new_exp)
+            } else if (chr == "(") {
+                //stack.push(exp) //no need to do this!                        
+                exp = [exp]
+            } else if (chr == ")") { //wait you might need to set the state
+                console.log("you are here")
+                console.log(exp)
+                new_exp = exp; 
+                exp = stack.pop()
+                exp.push(new_exp)
+                new_exp = exp; 
+                exp = stack.pop()
+                exp.push(new_exp)
+            } else if (is_symbol(chr)) {
+                exp = [exp]
+                need_to_close = true;
+                val.push(chr)
+            } else {
             }
         }
         i++;
