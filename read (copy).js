@@ -6,11 +6,9 @@ function parse(code){
     var state = "symbol";
     var chr;
     var need_to_close = false;
-    var need_to_close_for_quote = false;
-    var space = 0;    
+    var need_to_close_for_quote = false;    
     while (i < code.length) {
         chr = code.charAt(i)
-        
         if (state == "symbol") {
             if (is_symbol(chr)) {
                 val.push(chr)            
@@ -169,16 +167,6 @@ function parse(code){
             }
         }
         i++;
-        if (state != "quote" && state != "special quote" && chr == " ") {
-            space++
-            if (space % 4 == 0) {
-                exp.push("tab")
-            }
-        }
-        if (state != "quote" && state != "special quote" && is_return(chr)) {
-            space = 0
-            exp.push("return")
-        }
     }
     if (val.length > 0) {
         exp.push(val.join(""))
